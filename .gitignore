@@ -1,0 +1,13 @@
+*.png
+*.*~
+*.swp
+*.pyc
+img/*
+*.profile
+*.c
+kernprof.py
+*.lprof
+build/*
+*.so
+*.html
+profile/*
