@@ -11,3 +11,4 @@ build/*
 *.so
 *.html
 profile/*
+.ropeproject/*
