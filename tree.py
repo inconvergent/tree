@@ -25,7 +25,7 @@ MID = 0.5
 
 INIT_BRANCH = 20.*ONE
 BRANCH_ANGLE = 0.2*PI
-BRANCH_DIMINISH = ONE/50
+BRANCH_DIMINISH = ONE/40
 BRANCH_SPLIT_DIMINISH = 0.71
 
 BRANCH_PROB = 0.005
@@ -124,13 +124,16 @@ class Render(object):
 
 class Branch():
 
-  def __init__(self,x,y,r,a,s=ONE):
+  def __init__(self,x,y,r,a,s=ONE,g=0):
 
     self.x = x
     self.y = y
     self.r = r
     self.a = a
     self.s = s
+
+    self.i = 0 # steps
+    self.g = g # generation
 
   def step(self):
 
@@ -145,6 +148,7 @@ class Branch():
     dy = sin(self.a)*self.s
     self.x += dx
     self.y += dy
+    self.i += 1
 
 def main():
 
@@ -229,7 +233,7 @@ def main():
       rx.rectangle(xx,yy,ONE,ONE)
       rx.fill()
 
-    ## NOISE
+    ## TRUNK SHADE 2
     GRAINS = 3
     dd = sqrt(square(x-x1) + square(y-y1))
     the = a - 0.5*PI
@@ -252,7 +256,7 @@ def main():
 
       if b.r<=ONE:
         q_remove.append(i)
-        draw_leaf(b)
+        #draw_leaf(b)
         continue
 
       if random()<BRANCH_PROB:
@@ -261,9 +265,11 @@ def main():
         y = b.y
         a = b.a
         r = b.r
+        g = b.g
 
-        b1 = Branch(x,y,BRANCH_SPLIT_DIMINISH*r,a+random()*BRANCH_ANGLE,ONE)
-        b2 = Branch(x,y,BRANCH_SPLIT_DIMINISH*r,a-random()*BRANCH_ANGLE,ONE)
+        new_r = BRANCH_SPLIT_DIMINISH*r
+        b1 = Branch(x,y,new_r,a+random()*BRANCH_ANGLE,ONE,g+1)
+        b2 = Branch(x,y,new_r,a-random()*BRANCH_ANGLE,ONE,g+1)
         q_new.append(b2)
         q_new.append(b1)
       else:
