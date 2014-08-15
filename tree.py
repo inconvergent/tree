@@ -15,38 +15,35 @@ from numpy.random import random, normal
 FNAME = './img/xx'
 NMAX = int(2*1e8)
 
-SIZE = 3000
+SIZE = 1000
 ONE = 1./SIZE
+
+GRAINS = int(SIZE*0.02)
 
 PI = pi
 TWOPI = 2.*pi
 PI5 = 0.5*pi
 MID = 0.5
 
-INIT_BRANCH = 3*20.*ONE
+DRAW_ITT = 10
+
+INIT_BRANCH = SIZE*0.02*ONE
 BRANCH_ANGLE = 0.2*PI
-BRANCH_DIMINISH = ONE/50
+BRANCH_DIMINISH = ONE/40
 BRANCH_SPLIT_DIMINISH = 0.71
+BRANCH_PROB_SCALE = 1./(INIT_BRANCH)/SIZE*15.
 
-BRANCH_PROB = 0.005/3.
+SEARCH_ANGLE_MAX = 10.*pi/SIZE
+SEARCH_ANGLE_EXP = 0.05
 
-SEARCH_ANGLE_MAX = pi*0.01/3.
-SEARCH_ANGLE_EXP = 0.1
-
-
-BACK = [1]*3
+## COLORS AND SHADES
+BACK = [1,1,1,1]
 FRONT = [0, 0, 0, 0.5]
 TRUNK_STROKE = [0, 0, 0, 1]
 TRUNK = [1, 1, 1, 1]
 TRUNK_SHADE = [0,0,0,0.5]
 #TRUNK_SHADE = [1,1,1,0.5]
 LEAF = [0,0,1,0.5]
-
-
-
-LINEWIDTH = ONE*2
-
-DRAW_ITT = 10
 
 
 class Render(object):
@@ -71,7 +68,7 @@ class Render(object):
 
   def clear_canvas(self):
 
-    self.ctx.set_source_rgb(*BACK)
+    self.ctx.set_source_rgba(*BACK)
     self.ctx.rectangle(0, 0, 1, 1)
     self.ctx.fill()
 
@@ -85,12 +82,11 @@ class Render(object):
     sur = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.n, self.n)
     ctx = cairo.Context(sur)
     ctx.scale(self.n, self.n)
-    ctx.set_source_rgb(*BACK)
-    ctx.rectangle(0, 0, 1, 1)
-    ctx.fill()
 
     self.sur = sur
     self.ctx = ctx
+
+    self.clear_canvas()
 
   def init_step(self, e):
 
@@ -154,38 +150,10 @@ def main():
 
   render = Render(SIZE)
   render.ctx.set_source_rgba(*FRONT)
-  render.ctx.set_line_width(LINEWIDTH)
+  render.ctx.set_line_width(ONE)
 
   Q = []
-  Q.append(Branch(MID,0.8,INIT_BRANCH,-PI*0.5,ONE))
-
-  def draw_leaf(b):
-
-    rx = render.ctx
-    rx.set_source_rgba(*LEAF)
-
-    x = b.x
-    y = b.y
-    s = b.s
-
-    GRAINS = 100*3
-    LEAF_LENGTH = INIT_BRANCH
-
-    x1 = x + cos(-PI)*LEAF_LENGTH
-    x2 = x + cos(0)*LEAF_LENGTH
-    y1 = y + sin(-PI)*LEAF_LENGTH
-    y2 = y + sin(0)*LEAF_LENGTH
-    dd = sqrt(square(x1-x2) + square(y1-y2))
-
-    the = -PI
-
-    scales = random(GRAINS)*dd*random()
-    xxp = x1 - scales*cos(the)
-    yyp = y1 - scales*sin(the)
-
-    for xx,yy in zip(xxp,yyp):
-      rx.rectangle(xx,yy,ONE,ONE)
-      rx.fill()
+  Q.append(Branch(MID,0.9,INIT_BRANCH,-PI*0.5,ONE))
 
   def draw_branch(b):
     a = b.a
@@ -196,7 +164,6 @@ def main():
 
     rx = render.ctx
 
-    GRAINS = 20*3
 
     x1 = x + cos(a-0.5*PI)*r
     x2 = x + cos(a+0.5*PI)*r
@@ -234,11 +201,10 @@ def main():
       rx.fill()
 
     ## TRUNK SHADE 2
-    GRAINS = 3
     dd = sqrt(square(x-x1) + square(y-y1))
     the = a - 0.5*PI
 
-    scales = random(GRAINS)*dd*random()
+    scales = random(GRAINS/5)*dd*random()
     xxp = x1 - scales*cos(the)
     yyp = y1 - scales*sin(the)
 
@@ -256,10 +222,9 @@ def main():
 
       if b.r<=ONE:
         q_remove.append(i)
-        #draw_leaf(b)
         continue
-
-      if random()<BRANCH_PROB:
+      branch_prob = (INIT_BRANCH-b.r+ONE)*BRANCH_PROB_SCALE
+      if random()<branch_prob:
 
         x = b.x
         y = b.y
