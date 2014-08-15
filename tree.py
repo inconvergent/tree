@@ -15,7 +15,7 @@ from numpy.random import random, normal
 FNAME = './img/xx'
 NMAX = int(2*1e8)
 
-SIZE = 1000
+SIZE = 3000
 ONE = 1./SIZE
 
 PI = pi
@@ -23,14 +23,14 @@ TWOPI = 2.*pi
 PI5 = 0.5*pi
 MID = 0.5
 
-INIT_BRANCH = 20.*ONE
+INIT_BRANCH = 3*20.*ONE
 BRANCH_ANGLE = 0.2*PI
-BRANCH_DIMINISH = ONE/40
+BRANCH_DIMINISH = ONE/50
 BRANCH_SPLIT_DIMINISH = 0.71
 
-BRANCH_PROB = 0.005
+BRANCH_PROB = 0.005/3.
 
-SEARCH_ANGLE_MAX = pi*0.01
+SEARCH_ANGLE_MAX = pi*0.01/3.
 SEARCH_ANGLE_EXP = 0.1
 
 
@@ -168,7 +168,7 @@ def main():
     y = b.y
     s = b.s
 
-    GRAINS = 100
+    GRAINS = 100*3
     LEAF_LENGTH = INIT_BRANCH
 
     x1 = x + cos(-PI)*LEAF_LENGTH
@@ -196,7 +196,7 @@ def main():
 
     rx = render.ctx
 
-    GRAINS = 20
+    GRAINS = 20*3
 
     x1 = x + cos(a-0.5*PI)*r
     x2 = x + cos(a+0.5*PI)*r
