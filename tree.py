@@ -15,7 +15,7 @@ from numpy.random import random, normal
 FNAME = './img/xx'
 NMAX = int(2*1e8)
 
-SIZE = 3000
+SIZE = 1080
 ONE = 1./SIZE
 
 GRAINS = int(SIZE*0.02)
@@ -68,7 +68,9 @@ class Render(object):
 
   def clear_canvas(self):
 
-    self.ctx.set_source_rgba(*BACK)
+    back = [1,1,1,0.05]
+
+    self.ctx.set_source_rgba(*back)
     self.ctx.rectangle(0, 0, 1, 1)
     self.ctx.fill()
 
@@ -214,6 +216,8 @@ def main():
 
   def step():
 
+    render.clear_canvas()
+
     q_remove = []
     q_new = []
     for i,b in enumerate(Q):
@@ -250,7 +254,10 @@ def main():
     if Q:
       return True
     else:
-      return False
+
+      render.clear_canvas()
+      Q.append(Branch(MID,0.9,INIT_BRANCH,-PI*0.5,ONE))
+      return True
 
   render.init_step(step)
 
