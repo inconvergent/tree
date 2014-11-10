@@ -15,7 +15,7 @@ from numpy.random import random, normal
 FNAME = './img/xx'
 NMAX = int(2*1e8)
 
-SIZE = 3000
+SIZE = 10000
 ONE = 1./SIZE
 
 GRAINS = int(SIZE*0.02)
@@ -25,16 +25,16 @@ TWOPI = 2.*pi
 PI5 = 0.5*pi
 MID = 0.5
 
-DRAW_ITT = 10
+DRAW_ITT = 1000
 
-INIT_BRANCH = SIZE*0.02*ONE
-BRANCH_ANGLE = 0.2*PI
-BRANCH_DIMINISH = ONE/40
+INIT_BRANCH = SIZE*0.03*ONE
+BRANCH_ANGLE = 0.3*PI
+BRANCH_DIMINISH = ONE/27.
 BRANCH_SPLIT_DIMINISH = 0.71
-BRANCH_PROB_SCALE = 1./(INIT_BRANCH)/SIZE*20.
+BRANCH_PROB_SCALE = 1./(INIT_BRANCH)/SIZE*15.
 
 SEARCH_ANGLE_MAX = 10.*pi/SIZE
-SEARCH_ANGLE_EXP = 0.05
+SEARCH_ANGLE_EXP = 2.
 
 ## COLORS AND SHADES
 BACK = [1,1,1,1]
@@ -115,6 +115,10 @@ class Render(object):
     self.steps += 1
     self.itt += 1
 
+    if not self.itt % DRAW_ITT:
+
+      self.sur.write_to_png('./img/img{:04d}.png'.format(self.itt))
+
     return res
 
 
@@ -137,8 +141,19 @@ class Branch():
     self.r = self.r - BRANCH_DIMINISH
 
     angle = normal()*SEARCH_ANGLE_MAX
-    #self.a += (1.-1./((ge+1)**SEARCH_ANGLE_EXP))*angle
-    self.a += ((1./(ONE + INIT_BRANCH - self.r))**SEARCH_ANGLE_EXP)*angle
+    #da = (1.-1./((self.g+1)**SEARCH_ANGLE_EXP))*angle
+    #da = ((1./(ONE + INIT_BRANCH - self.r))**SEARCH_ANGLE_EXP)*angle
+
+    #da = (1.-1./(ONE + INIT_BRANCH - self.r)**SEARCH_ANGLE_EXP)*angle
+    da = ((1.+(ONE+INIT_BRANCH-self.r)/INIT_BRANCH)**SEARCH_ANGLE_EXP)
+
+    print da
+
+    self.a += da*angle
+
+    #print self.r, ((ONE+INIT_BRANCH-self.r)**SEARCH_ANGLE_EXP)*angle
+
+    #print ONE + INIT_BRANCH - self.r
 
     dx = cos(self.a)*self.s
     dy = sin(self.a)*self.s
@@ -223,7 +238,9 @@ def main():
       if b.r<=ONE:
         q_remove.append(i)
         continue
+
       branch_prob = (INIT_BRANCH-b.r+ONE)*BRANCH_PROB_SCALE
+
       if random()<branch_prob:
 
         x = b.x
@@ -237,7 +254,9 @@ def main():
         b2 = Branch(x,y,new_r,a-random()*BRANCH_ANGLE,ONE,g+1)
         q_new.append(b2)
         q_new.append(b1)
+
       else:
+
         q_remove.append(i)
         q_new.append(b)
 
