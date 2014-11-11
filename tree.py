@@ -6,13 +6,14 @@ from numpy import cos,sin
 
 class Branch(object):
 
-  def __init__(self,x,y,r,a,s,g):
+  def __init__(self,tree,x,y,r,a,g):
+
+    self.tree = tree
 
     self.x = x
     self.y = y
     self.r = r
     self.a = a
-    self.s = s
 
     self.i = 0
     self.g = g
@@ -20,20 +21,20 @@ class Branch(object):
   def step(self):
 
     #self.r *= BRANCH_DIMINISH
-    self.r = self.r - self.branch_diminish
+    self.r = self.r - self.tree.branch_diminish
 
-    angle = normal()*self.branch_angle_max
+    angle = normal()*self.tree.branch_angle_max
 
     #da = (1.-1./((self.g+1)**SEARCH_ANGLE_EXP))*angle
     #da = ((1./(ONE + INIT_BRANCH - self.r))**SEARCH_ANGLE_EXP)*angle
     #da = (1.-1./(ONE + INIT_BRANCH - self.r)**SEARCH_ANGLE_EXP)*angle
 
-    scale = self.one+self.root_r-self.r
-    da = (1.+scale/self.root_r)**self.branch_angle_exp
+    scale = self.tree.one+self.tree.root_r-self.r
+    da = (1.+scale/self.tree.root_r)**self.tree.branch_angle_exp
     self.a += da*angle
 
-    dx = cos(self.a)*self.s
-    dy = sin(self.a)*self.s
+    dx = cos(self.a)*self.tree.stepsize
+    dy = sin(self.a)*self.tree.stepsize
 
     self.x += dx
     self.y += dy
@@ -51,6 +52,7 @@ class Tree(object):
                branch_split_angle,
                branch_prob_scale,
                branch_diminish,
+               branch_split_diminish,
                branch_angle_max,
                branch_angle_exp):
 
@@ -61,7 +63,9 @@ class Tree(object):
 
     self.one = one
 
+    self.branch_split_angle = branch_split_angle
     self.branch_diminish = branch_diminish
+    self.branch_split_diminish = branch_split_diminish
     self.branch_angle_max = branch_angle_max
     self.branch_angle_exp = branch_angle_exp
 
@@ -69,15 +73,12 @@ class Tree(object):
 
     self.Q = []
 
-    branch = Branch(root_x,
+    branch = Branch(self,
+                    root_x,
                     root_y,
                     root_r,
                     root_a,
-                    stepsize,
-                    0,
-                    branch_diminish,
-                    branch_angle_max,
-                    branch_angle_exp)
+                    0)
 
     self.Q.append(branch)
 
@@ -93,7 +94,8 @@ class Tree(object):
         q_remove.append(i)
         continue
 
-      branch_prob = (self.init_branch-b.r+self.one)*self.branch_prob_scale
+      branch_prob = (self.root_r-
+                     b.r+self.one)*self.branch_prob_scale
 
       if random()<branch_prob:
 
@@ -104,25 +106,19 @@ class Tree(object):
         g = b.g
 
         new_r = self.branch_split_diminish*r
-        b1 = Branch(x,y,new_r,
+        b1 = Branch(self,
+                    x,
+                    y,
+                    new_r,
                     a+random()*self.branch_split_angle,
-                    self.stepsize,
-                    g+1,
-                    self.one,
-                    self.init_branch,
-                    self.branch_diminish,
-                    self.search_angle_max,
-                    self.search_angle_exp)
+                    g+1)
 
-        b2 = Branch(x,y,new_r,
+        b2 = Branch(self,
+                    x,
+                    y,
+                    new_r,
                     a+random()*self.branch_split_angle,
-                    self.stepsize,
-                    g+1,
-                    self.one,
-                    self.init_branch,
-                    self.branch_diminish,
-                    self.search_angle_max,
-                    self.search_angle_exp)
+                    g+1)
 
 
         q_new.append(b2)

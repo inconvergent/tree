@@ -40,8 +40,9 @@ def main():
 
   from render import Render
   from tree import Tree
+  from time import time
 
-  render = Render(SIZE)
+  render = Render(SIZE, FRONT, BACK, TRUNK, TRUNK_STROKE,GRAINS)
   render.ctx.set_source_rgba(*FRONT)
   render.ctx.set_line_width(ONE)
 
@@ -54,10 +55,24 @@ def main():
               BRANCH_SPLIT_ANGLE,
               BRANCH_PROB_SCALE,
               BRANCH_DIMINISH,
+              BRANCH_SPLIT_DIMINISH,
               BRANCH_ANGLE_MAX,
               BRANCH_ANGLE_EXP)
+
+  i = 1
+  while tree.Q:
+
+    i += 1
+    tree.step()
+    map(render.draw_branch,tree.Q)
+
+    if not i%1000:
+      print i
+
+  render.sur.write_to_png('./img/test_{:10.0f}.png'.format(time()))
 
 
 if __name__ == '__main__':
 
     main()
+

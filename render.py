@@ -18,7 +18,7 @@ class Render(object):
     self.front = front
     self.back = back
     self.trunk = trunk
-    self.trunk_stroke
+    self.trunk_stroke = trunk_stroke
     self.grains = grains
 
     self.__init_cairo()
@@ -51,12 +51,10 @@ class Render(object):
     r = b.r
     x = b.x
     y = b.y
-    s = b.s
 
     rx = self.ctx
 
     one = self.one
-
 
     x1 = x + cos(a-0.5*pi)*r
     x2 = x + cos(a+0.5*pi)*r
