@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import cairo
-#import gtk
-#import gobject
+import gtk
+import gobject
 
 from numpy import cos, sin, pi, sqrt, square
 from numpy.random import random
@@ -105,45 +105,46 @@ class Render(object):
       rx.fill()
 
 
-#class Animate(Render):
+class Animate(Render):
 
-  #def __init__(self,n,front,back,steps_itt, step):
+  def __init__(self, n, front, back, trunk, trunk_stroke, grains,
+               steps_itt, step):
 
-    #Render.__init__(self, n,front,back)
+    Render.__init__(self, n, front, back, trunk, trunk_stroke, grains)
 
-    #window = gtk.Window()
-    #window.resize(self.n, self.n)
+    window = gtk.Window()
+    window.resize(self.n, self.n)
 
-    #self.steps_itt = steps_itt
-    #self.step = step
+    self.steps_itt = steps_itt
+    self.step = step
 
-    #window.connect("destroy", self.__destroy)
-    #darea = gtk.DrawingArea()
-    #darea.connect("expose-event", self.expose)
-    #window.add(darea)
-    #window.show_all()
+    window.connect("destroy", self.__destroy)
+    darea = gtk.DrawingArea()
+    darea.connect("expose-event", self.expose)
+    window.add(darea)
+    window.show_all()
 
-    #self.darea = darea
+    self.darea = darea
 
-    #self.steps = 0
-    #gobject.idle_add(self.step_wrap)
+    self.steps = 0
+    gobject.idle_add(self.step_wrap)
 
-  #def __destroy(self,*args):
+  def __destroy(self,*args):
 
-    #gtk.main_quit(*args)
+    gtk.main_quit(*args)
 
-  #def expose(self,*args):
+  def expose(self,*args):
 
-    #cr = self.darea.window.cairo_create()
-    #cr.set_source_surface(self.sur,0,0)
-    #cr.paint()
+    cr = self.darea.window.cairo_create()
+    cr.set_source_surface(self.sur,0,0)
+    cr.paint()
 
-  #def step_wrap(self):
+  def step_wrap(self):
 
-    #res = self.step(self.steps_itt,self)
-    #self.steps += 1
-    #self.expose()
+    res = self.step(self.steps_itt,self)
+    self.steps += 1
+    self.expose()
 
-    #return res
+    return res
 
 

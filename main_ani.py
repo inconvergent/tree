@@ -4,27 +4,22 @@
 from numpy import pi
 
 
-FNAME = './img/xx'
-NMAX = int(2*1e8)
-
-SIZE = 10000
+SIZE = 1080
 ONE = 1./SIZE
 
 GRAINS = int(SIZE*0.02)
 
-#PI5 = 0.5*pi
 MID = 0.5
 
-DRAW_ITT = 1000
-
 INIT_BRANCH = SIZE*0.03*ONE
-BRANCH_DIMINISH = ONE/27.
-BRANCH_SPLIT_DIMINISH = 0.71
-BRANCH_SPLIT_ANGLE = 0.3*pi
-BRANCH_PROB_SCALE = 1./(INIT_BRANCH)/SIZE*15.
+BRANCH_DIMINISH = ONE/32
 
-BRANCH_ANGLE_MAX = 10.*pi/SIZE
-BRANCH_ANGLE_EXP = 2.
+BRANCH_SPLIT_DIMINISH = 0.71
+BRANCH_PROB_SCALE = 1./(INIT_BRANCH)/SIZE*10
+
+BRANCH_SPLIT_ANGLE = 0.2*pi
+BRANCH_ANGLE_MAX = 5.*pi/SIZE
+BRANCH_ANGLE_EXP = 1.5
 
 ## COLORS AND SHADES
 BACK = [1,1,1,1]
@@ -35,19 +30,14 @@ TRUNK_SHADE = [0,0,0,0.5]
 #TRUNK_SHADE = [1,1,1,0.5]
 LEAF = [0,0,1,0.5]
 
+STEPS_ITT = 1
+
 
 def main():
 
-  from render import Render
+  from render import Animate
   from tree import Tree
-  from time import time
-
-  render = Render(SIZE, FRONT, BACK, TRUNK, TRUNK_STROKE,GRAINS)
-  render.ctx.set_source_rgba(*FRONT)
-  render.ctx.set_line_width(ONE)
-
-  #while True:
-  #render.clear_canvas()
+  import gtk
 
   tree = Tree(MID,
               0.9,
@@ -62,17 +52,23 @@ def main():
               BRANCH_ANGLE_MAX,
               BRANCH_ANGLE_EXP)
 
-  i = 1
-  while tree.Q:
+  def wrap(steps_itt,render):
 
-    i += 1
     tree.step()
     map(render.draw_branch,tree.Q)
 
-    if not i%1000:
-      print i
+    if tree.Q:
+      return True
 
-  render.sur.write_to_png('./img/test_{:10.0f}.png'.format(time()))
+    return False
+
+
+  render = Animate(SIZE, FRONT, BACK, TRUNK, TRUNK_STROKE,GRAINS,
+                   STEPS_ITT, wrap)
+  render.ctx.set_source_rgba(*FRONT)
+  render.ctx.set_line_width(ONE)
+
+  gtk.main()
 
 
 if __name__ == '__main__':
