@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from numpy.random import normal, random
+from numpy.random import normal, random, randint
 from numpy import cos,sin
 
 class Branch(object):
@@ -14,6 +14,8 @@ class Branch(object):
     self.y = y
     self.r = r
     self.a = a
+
+    self.shade = 0
 
     self.i = 0
     self.g = g
@@ -106,23 +108,31 @@ class Tree(object):
         g = b.g
 
         new_r = self.branch_split_diminish*r
-        b1 = Branch(self,
-                    x,
-                    y,
-                    new_r,
-                    a+random()*self.branch_split_angle,
-                    g+1)
+        #b1 = Branch(self,
+                    #x,
+                    #y,
+                    #new_r,
+                    #a-random()*self.branch_split_angle,
+                    #g+1)
 
-        b2 = Branch(self,
-                    x,
-                    y,
-                    new_r,
-                    a-random()*self.branch_split_angle,
-                    g+1)
+        #b2 = Branch(self,
+                    #x,
+                    #y,
+                    #new_r,
+                    #a+random()*self.branch_split_angle,
+                    #g+1)
 
 
-        q_new.append(b2)
-        q_new.append(b1)
+        #q_new.append(b2)
+        #q_new.append(b1)
+
+        ra = ((-1)**randint(2))*random()*self.branch_split_angle
+        q_new.append(Branch(self,
+                     x,
+                     y,
+                     new_r,
+                     a + ra,
+                     g+1))
 
       else:
 

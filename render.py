@@ -45,7 +45,7 @@ class Render(object):
     self.ctx.arc(x, y, r, 0, pi*2.)
     self.ctx.fill()
 
-  def draw_branch(self,b):
+  def branch(self,b):
 
     a = b.a
     r = b.r
@@ -64,9 +64,10 @@ class Render(object):
 
     ## TRUNK STROKE
     rx.set_source_rgba(*self.trunk)
-    rx.move_to(x1,y1)
-    rx.line_to(x2,y2)
-    rx.stroke()
+    for _ in xrange(10):
+      rx.move_to(x1,y1)
+      rx.line_to(x2,y2)
+      rx.stroke()
 
     ## OUTLINE
     rx.set_source_rgba(*self.trunk_stroke)
@@ -80,7 +81,7 @@ class Render(object):
     rx.rectangle(x2,y2,one,one)
     rx.fill()
 
-    ## TRUNK SHADE
+    ## TRUNK SHADE RIGHT
     the = 0.5*pi + a
 
     # TODO: shade increments
@@ -92,7 +93,72 @@ class Render(object):
       rx.rectangle(xx,yy,one,one)
       rx.fill()
 
-    ## TRUNK SHADE 2
+    ## TRUNK SHADE LEFT
+    dd = sqrt(square(x-x1) + square(y-y1))
+    the = a - 0.5*pi
+
+    scales = random(int(self.grains/5.))*dd*random()
+    xxp = x1 - scales*cos(the)
+    yyp = y1 - scales*sin(the)
+
+    for xx,yy in zip(xxp,yyp):
+      rx.rectangle(xx,yy,one,one)
+      rx.fill()
+
+  def branch2(self,b):
+
+    a = b.a
+    r = b.r
+    x = b.x
+    y = b.y
+
+    rx = self.ctx
+
+    one = self.one
+
+    x1 = x + cos(a-0.5*pi)*r
+    x2 = x + cos(a+0.5*pi)*r
+    y1 = y + sin(a-0.5*pi)*r
+    y2 = y + sin(a+0.5*pi)*r
+    dd = sqrt(square(x-x2) + square(y-y2))
+
+    ## TRUNK STROKE
+    rx.set_source_rgba(*self.trunk)
+    for _ in xrange(10):
+      rx.move_to(x1,y1)
+      rx.line_to(x2,y2)
+      rx.stroke()
+
+    ## OUTLINE
+    rx.set_source_rgba(*self.trunk_stroke)
+    rx.rectangle(x1,y1,one,one)
+    rx.fill()
+    rx.rectangle(x1,y1,one,one)
+    rx.fill()
+
+    rx.rectangle(x2,y2,one,one)
+    rx.fill()
+    rx.rectangle(x2,y2,one,one)
+    rx.fill()
+
+    rx.rectangle(x1,y1,one,one)
+    rx.fill()
+    rx.rectangle(x2,y2,one,one)
+    rx.fill()
+
+    ## TRUNK SHADE RIGHT
+    the = 0.5*pi + a
+
+    # TODO: shade increments
+    scales = random(self.grains)*dd*random()
+    xxp = x2 - scales*cos(the)
+    yyp = y2 - scales*sin(the)
+
+    for xx,yy in zip(xxp,yyp):
+      rx.rectangle(xx,yy,one,one)
+      rx.fill()
+
+    ## TRUNK SHADE LEFT
     dd = sqrt(square(x-x1) + square(y-y1))
     the = a - 0.5*pi
 

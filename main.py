@@ -10,21 +10,21 @@ NMAX = int(2*1e8)
 SIZE = 10000
 ONE = 1./SIZE
 
-GRAINS = int(SIZE*0.02)
 
 #PI5 = 0.5*pi
 MID = 0.5
 
-DRAW_ITT = 1000
 
 INIT_BRANCH = SIZE*0.03*ONE
+GRAINS = int(SIZE*0.03)
+
 BRANCH_DIMINISH = ONE/27.
 BRANCH_SPLIT_DIMINISH = 0.71
 BRANCH_SPLIT_ANGLE = 0.3*pi
-BRANCH_PROB_SCALE = 1./(INIT_BRANCH)/SIZE*15.
+BRANCH_PROB_SCALE = 1./(INIT_BRANCH)/SIZE*40.
 
 BRANCH_ANGLE_MAX = 10.*pi/SIZE
-BRANCH_ANGLE_EXP = 2.
+BRANCH_ANGLE_EXP = 2.2
 
 ## COLORS AND SHADES
 BACK = [1,1,1,1]
@@ -32,7 +32,6 @@ FRONT = [0, 0, 0, 0.5]
 TRUNK_STROKE = [0, 0, 0, 1]
 TRUNK = [1, 1, 1, 1]
 TRUNK_SHADE = [0,0,0,0.5]
-#TRUNK_SHADE = [1,1,1,0.5]
 LEAF = [0,0,1,0.5]
 
 
@@ -67,7 +66,7 @@ def main():
 
     i += 1
     tree.step()
-    map(render.draw_branch,tree.Q)
+    map(render.branch2,tree.Q)
 
     if not i%1000:
       print i

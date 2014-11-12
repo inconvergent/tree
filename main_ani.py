@@ -7,19 +7,20 @@ from numpy import pi
 SIZE = 1080
 ONE = 1./SIZE
 
-GRAINS = int(SIZE*0.02)
 
 MID = 0.5
 
 INIT_BRANCH = SIZE*0.03*ONE
+GRAINS = int(SIZE*0.02)
+
 BRANCH_DIMINISH = ONE/32
 
 BRANCH_SPLIT_DIMINISH = 0.71
 BRANCH_PROB_SCALE = 1./(INIT_BRANCH)/SIZE*10
 
-BRANCH_SPLIT_ANGLE = 0.2*pi
+BRANCH_SPLIT_ANGLE = 0.3*pi
 BRANCH_ANGLE_MAX = 5.*pi/SIZE
-BRANCH_ANGLE_EXP = 1.5
+BRANCH_ANGLE_EXP = 2
 
 ## COLORS AND SHADES
 BACK = [1,1,1,1]
@@ -55,7 +56,7 @@ def main():
   def wrap(steps_itt,render):
 
     tree.step()
-    map(render.draw_branch,tree.Q)
+    map(render.branch2,tree.Q)
 
     if tree.Q:
       return True
