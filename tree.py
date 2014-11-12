@@ -117,7 +117,7 @@ class Tree(object):
                     x,
                     y,
                     new_r,
-                    a+random()*self.branch_split_angle,
+                    a-random()*self.branch_split_angle,
                     g+1)
 
 
