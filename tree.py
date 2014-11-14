@@ -61,8 +61,8 @@ class Tree(object):
     self.root_x = root_x
     self.root_y = root_y
     self.root_r = root_r
+    self.root_a = root_a
     self.stepsize = stepsize
-
     self.one = one
 
     self.branch_split_angle = branch_split_angle
@@ -73,13 +73,17 @@ class Tree(object):
 
     self.branch_prob_scale = branch_prob_scale
 
+    self.init()
+
+  def init(self):
+
     self.Q = []
 
     branch = Branch(self,
-                    root_x,
-                    root_y,
-                    root_r,
-                    root_a,
+                    self.root_x,
+                    self.root_y,
+                    self.root_r,
+                    self.root_a,
                     0)
 
     self.Q.append(branch)
@@ -108,23 +112,6 @@ class Tree(object):
         g = b.g
 
         new_r = self.branch_split_diminish*r
-        #b1 = Branch(self,
-                    #x,
-                    #y,
-                    #new_r,
-                    #a-random()*self.branch_split_angle,
-                    #g+1)
-
-        #b2 = Branch(self,
-                    #x,
-                    #y,
-                    #new_r,
-                    #a+random()*self.branch_split_angle,
-                    #g+1)
-
-
-        #q_new.append(b2)
-        #q_new.append(b1)
 
         ra = ((-1)**randint(2))*random()*self.branch_split_angle
         q_new.append(Branch(self,

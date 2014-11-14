@@ -16,7 +16,7 @@ GRAINS = int(SIZE*0.02)
 BRANCH_DIMINISH = ONE/32
 
 BRANCH_SPLIT_DIMINISH = 0.71
-BRANCH_PROB_SCALE = 1./(INIT_BRANCH)/SIZE*10
+BRANCH_PROB_SCALE = 1./(INIT_BRANCH)/SIZE*20
 
 BRANCH_SPLIT_ANGLE = 0.3*pi
 BRANCH_ANGLE_MAX = 5.*pi/SIZE
@@ -41,7 +41,7 @@ def main():
   import gtk
 
   tree = Tree(MID,
-              0.9,
+              0.95,
               INIT_BRANCH,
               -pi*0.5,
               ONE,
@@ -60,8 +60,10 @@ def main():
 
     if tree.Q:
       return True
-
-    return False
+    else:
+      tree.init()
+      render.clear_canvas()
+      return True
 
 
   render = Animate(SIZE, FRONT, BACK, TRUNK, TRUNK_STROKE,GRAINS,
