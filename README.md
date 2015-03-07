@@ -11,7 +11,7 @@ As you can see, if you examine the results a little, the trees take shapes that
 er neither realistic nor possible. Yet they look very much like trees at first
 glance.
 
-![tree](http://inconvergent.net/xstatic/img-content/tree_c.jpg "tree")
+![tree](http://inconvergent.net/img/tree_c.jpg "tree")
 
 -----------
 http://inconvergent.net
