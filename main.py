@@ -45,34 +45,33 @@ def main():
   render.ctx.set_source_rgba(*FRONT)
   render.ctx.set_line_width(ONE)
 
-  #while True:
-  #render.clear_canvas()
+  while True:
 
-  tree = Tree(MID,
-              0.9,
-              INIT_BRANCH,
-              -pi*0.5,
-              ONE,
-              ONE,
-              BRANCH_SPLIT_ANGLE,
-              BRANCH_PROB_SCALE,
-              BRANCH_DIMINISH,
-              BRANCH_SPLIT_DIMINISH,
-              BRANCH_ANGLE_MAX,
-              BRANCH_ANGLE_EXP)
+    render.clear_canvas()
+    tree = Tree(MID,
+                0.9,
+                INIT_BRANCH,
+                -pi*0.5,
+                ONE,
+                ONE,
+                BRANCH_SPLIT_ANGLE,
+                BRANCH_PROB_SCALE,
+                BRANCH_DIMINISH,
+                BRANCH_SPLIT_DIMINISH,
+                BRANCH_ANGLE_MAX,
+                BRANCH_ANGLE_EXP)
 
-  i = 1
-  while tree.Q:
+    i = 1
+    while tree.Q:
 
-    i += 1
-    tree.step()
-    map(render.branch2,tree.Q)
+      i += 1
+      tree.step()
+      map(render.branch2,tree.Q)
 
-    if not i%1000:
-      print i
+      if not i%1000:
+        print i
 
-  render.sur.write_to_png('./img/test_{:10.0f}.png'.format(time()))
-
+    render.sur.write_to_png('/media/var/andreas_tree/test_52_{:10.0f}.png'.format(time()))
 
 if __name__ == '__main__':
 
