@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 from numpy import pi
 
 
-SIZE = 560
+SIZE = 1200
 ONE = 1./SIZE
 
 
@@ -28,19 +28,12 @@ FRONT = [0, 0, 0, 0.5]
 TRUNK_STROKE = [0, 0, 0, 1]
 TRUNK = [1, 1, 1, 1]
 TRUNK_SHADE = [0,0,0,0.5]
-#TRUNK_SHADE = [1,1,1,0.5]
-LEAF = [0,0,1,0.5]
-
-STEPS_ITT = 1
-
-i = 0
 
 
 def main():
 
-  from modules.render import Animate
+  from iutils.render import Animate
   from modules.tree import Tree
-  import gtk
 
   tree = Tree(
     MID,
@@ -57,39 +50,21 @@ def main():
     BRANCH_ANGLE_EXP
   )
 
-  def wrap(steps_itt,render):
-
-    global i
+  def wrap(render):
 
     tree.step()
-    map(render.branch2,tree.Q)
+    tree.draw_brances(render, GRAINS, TRUNK, TRUNK_STROKE)
 
     if tree.Q:
-      render.sur.write_to_png('{:05d}.png'.format(i))
-      i += 1
       return True
     else:
-      #tree.init()
-      #render.clear_canvas()
       return False
 
-
-  render = Animate(
-    SIZE,
-    FRONT,
-    BACK,
-    TRUNK,
-    TRUNK_STROKE,
-    GRAINS,
-    STEPS_ITT, wrap
-  )
-  render.ctx.set_source_rgba(*FRONT)
-  render.ctx.set_line_width(ONE)
-
-  gtk.main()
+  render = Animate(SIZE, BACK, FRONT, wrap)
+  render.set_line_width(ONE)
+  render.start()
 
 
 if __name__ == '__main__':
-
     main()
 
